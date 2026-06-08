@@ -293,10 +293,21 @@ function HeroSection() {
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.06)")}
+                onClick={() => setLocation("/docs")}
               >
                 Documentation
               </button>
             </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.35 }}
+              className="text-xs mt-4 text-center md:text-left"
+              style={{ color: "rgba(255,255,255,0.28)" }}
+            >
+              Models under 2 GB are free. Larger models unlock once with USDC on Base. No subscription.
+            </motion.p>
           </div>
 
           {/* Right — architecture diagram */}
@@ -1423,6 +1434,7 @@ function FinalCTASection() {
               style={{ background: "rgba(0,0,0,0.18)", border: "2px solid rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.58)" }}
               onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.32)")}
               onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.18)")}
+              onClick={() => setLocation("/docs")}
             >
               Documentation
             </button>

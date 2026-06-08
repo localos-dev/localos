@@ -5,7 +5,7 @@ import { eq, sql } from "drizzle-orm";
 
 const router = Router();
 
-// POST /api/chat/stream — SSE streaming chat endpoint
+// POST /api/chat/stream: SSE streaming chat endpoint
 router.post("/chat/stream", async (req, res) => {
   const {
     chatId,

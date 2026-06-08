@@ -292,7 +292,7 @@ export default function FeaturesPage() {
                   {[
                     { label: "Privacy", value: "Complete. No data leaves the device." },
                     { label: "Offline Use", value: "Full capability with no network." },
-                    { label: "Cost", value: "Free. No tokens, no subscription." },
+                    { label: "Cost", value: "Free to start. Models under 2 GB cost nothing. Larger models unlock once with USDC on Base." },
                     { label: "Control", value: "You own every component." },
                   ].map(({ label, value }) => (
                     <div key={label} className="flex gap-3 items-start">
@@ -349,7 +349,7 @@ export default function FeaturesPage() {
           <Reveal>
             <h2 className="text-3xl font-bold text-white mb-4" style={{ letterSpacing: "-0.02em" }}>Ready to get started?</h2>
             <p className="mb-8" style={{ color: "rgba(255,255,255,0.45)" }}>
-              LocalOS is free, open, and runs entirely on your hardware. No signup, no payment, no waiting.
+              LocalOS is free to start. Models under 2 GB cost nothing. Larger models unlock with a one-time USDC payment on Base. No subscription, no recurring fees, no API key required.
             </p>
             <a href="/app" className="inline-block px-8 py-3 rounded-xl text-white font-semibold text-sm transition-all"
               style={{ background: "#0052FF" }}

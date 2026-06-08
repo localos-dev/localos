@@ -1,11 +1,10 @@
-import { db, projects, chats, messages, files, knowledgeDocs } from "@workspace/db";
-import { eq, count, sql } from "drizzle-orm";
+import { db, projects, chats, messages, files, knowledgeDocs, paymentSessions, modelAccess } from "@workspace/db";
+import { eq, count, sql, and } from "drizzle-orm";
 
-export { db, projects, chats, messages, files, knowledgeDocs };
-export { eq, count, sql };
+export { db, projects, chats, messages, files, knowledgeDocs, paymentSessions, modelAccess };
+export { eq, count, sql, and };
 
 export function initializeDatabase() {
-  // Access raw better-sqlite3 client via drizzle's $client property
   const sqlite = (db as unknown as { $client: { exec(sql: string): void; pragma(val: string): void } }).$client;
 
   sqlite.exec(`
@@ -55,6 +54,37 @@ export function initializeDatabase() {
       size INTEGER,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS payment_sessions (
+      id TEXT PRIMARY KEY,
+      user_wallet TEXT NOT NULL,
+      model_id TEXT NOT NULL,
+      amount_usdc INTEGER NOT NULL,
+      fresh_address TEXT NOT NULL UNIQUE,
+      fresh_pk_encrypted TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      usdc_received INTEGER,
+      relay_tx_hash TEXT,
+      gas_tx_hash TEXT,
+      error_message TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      expires_at TEXT NOT NULL,
+      completed_at TEXT
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_payment_sessions_fresh  ON payment_sessions(fresh_address);
+    CREATE INDEX IF NOT EXISTS idx_payment_sessions_user   ON payment_sessions(user_wallet, status);
+
+    CREATE TABLE IF NOT EXISTS model_access (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_wallet TEXT NOT NULL,
+      model_id TEXT NOT NULL,
+      session_id TEXT NOT NULL REFERENCES payment_sessions(id),
+      granted_at TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(user_wallet, model_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_model_access_wallet ON model_access(user_wallet);
   `);
 
   // Seed sample data if empty
@@ -62,7 +92,7 @@ export function initializeDatabase() {
   if (projectCount && projectCount.count === 0) {
     const project = db.insert(projects).values({
       name: "Welcome to LocalOS",
-      description: "Your first local AI project — everything runs on your machine.",
+      description: "Your first local AI project. Everything runs on your machine.",
       color: "#0052FF",
     }).returning().get();
 
@@ -78,7 +108,7 @@ export function initializeDatabase() {
           {
             chatId: chat.id,
             role: "assistant",
-            content: "# Welcome to LocalOS\n\nLocalOS is a fully self-hosted AI operating system that runs entirely on your machine.\n\n**Key features:**\n- All inference runs locally via Ollama\n- Projects and files stored in SQLite\n- No cloud, no API keys, no tracking\n\nConnect Ollama at http://localhost:11434 and install a model to start chatting with real AI.",
+            content: "# Welcome to LocalOS\n\nLocalOS is a fully self-hosted AI operating system that runs entirely on your machine.\n\n**Key features:**\n- All inference runs locally via the LLM runtime\n- Projects and files stored in SQLite\n- No cloud, no API keys, no tracking\n\nDownload a model from the Models page and start chatting.",
           },
         ]).run();
       }
@@ -95,7 +125,7 @@ export function initializeDatabase() {
           projectId: project.id,
           name: "README.md",
           path: "/README.md",
-          content: "# LocalOS Project\n\nThis project runs entirely on your machine.\n\n## Getting Started\n\n1. Install [Ollama](https://ollama.ai)\n2. Pull a model: `ollama pull llama3.2`\n3. Start chatting with your local AI\n",
+          content: "# LocalOS Project\n\nThis project runs entirely on your machine.\n\n## Getting Started\n\n1. Download a model from the Models page\n2. Start chatting with your local AI\n",
           language: "markdown",
         },
       ]).run();

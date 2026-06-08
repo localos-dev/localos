@@ -61,7 +61,7 @@ function StorageBarChart() {
     { label: "Documents indexed", value: 100, unit: "% local" },
     { label: "Search queries", value: 100, unit: "% local" },
     { label: "Context injection", value: 100, unit: "% local" },
-    { label: "External API calls", value: 0, unit: "% — none" },
+    { label: "External API calls", value: 0, unit: "% (none)" },
   ];
 
   return (

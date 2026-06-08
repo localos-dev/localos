@@ -1,10 +1,12 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WagmiProvider } from "wagmi";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import NotFound from "@/pages/not-found";
 import { AnimatePresence } from "framer-motion";
+import { wagmiConfig } from "@/lib/contract";
 
 import LandingPage from "@/pages/LandingPage";
 import AppPage from "@/pages/AppPage";
@@ -75,18 +77,20 @@ function Router() {
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <QueryClientProvider client={queryClient}>
-        <LLMProvider>
-          <TooltipProvider>
-            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-              <Router />
-            </WouterRouter>
-            <Toaster />
-          </TooltipProvider>
-        </LLMProvider>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <WagmiProvider config={wagmiConfig}>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <QueryClientProvider client={queryClient}>
+          <LLMProvider>
+            <TooltipProvider>
+              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                <Router />
+              </WouterRouter>
+              <Toaster />
+            </TooltipProvider>
+          </LLMProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </WagmiProvider>
   );
 }
 

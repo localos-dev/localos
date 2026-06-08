@@ -181,7 +181,7 @@ export default function RightPanel() {
   return (
     <div className="h-full flex flex-col bg-card border-l overflow-hidden">
 
-      {/* Code panel — shown when "Open in Editor" is clicked from chat */}
+      {/* Code panel: shown when "Open in Editor" is clicked from chat */}
       {rightPanelFileId !== null && (
         <CodePanel fileId={rightPanelFileId} onClose={() => setRightPanelFileId(null)} />
       )}

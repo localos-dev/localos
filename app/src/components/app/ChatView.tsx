@@ -250,7 +250,7 @@ export default function ChatView() {
       if (mode === "build") {
         let html = "";
 
-        // Try pre-built template first — no LLM needed for most types
+        // Try pre-built template first: no LLM needed for most types
         const template = getTemplateForRequest(content);
         if (template) {
           if (template.type === "website") {

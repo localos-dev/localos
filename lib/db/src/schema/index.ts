@@ -48,6 +48,33 @@ export const knowledgeDocs = sqliteTable("knowledge_docs", {
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
+export const paymentSessions = sqliteTable("payment_sessions", {
+  id: text("id").primaryKey(),
+  userWallet: text("user_wallet").notNull(),
+  modelId: text("model_id").notNull(),
+  amountUsdc: integer("amount_usdc").notNull(),
+  freshAddress: text("fresh_address").notNull().unique(),
+  freshPkEncrypted: text("fresh_pk_encrypted").notNull(),
+  status: text("status", {
+    enum: ["pending", "received", "relaying", "done", "expired", "failed"],
+  }).notNull().default("pending"),
+  usdcReceived: integer("usdc_received"),
+  relayTxHash: text("relay_tx_hash"),
+  gasTxHash: text("gas_tx_hash"),
+  errorMessage: text("error_message"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  expiresAt: text("expires_at").notNull(),
+  completedAt: text("completed_at"),
+});
+
+export const modelAccess = sqliteTable("model_access", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userWallet: text("user_wallet").notNull(),
+  modelId: text("model_id").notNull(),
+  sessionId: text("session_id").notNull().references(() => paymentSessions.id),
+  grantedAt: text("granted_at").notNull().default(sql`(datetime('now'))`),
+});
+
 export type Project = typeof projects.$inferSelect;
 export type InsertProject = typeof projects.$inferInsert;
 export type Chat = typeof chats.$inferSelect;
@@ -58,3 +85,7 @@ export type ProjectFile = typeof files.$inferSelect;
 export type InsertProjectFile = typeof files.$inferInsert;
 export type KnowledgeDoc = typeof knowledgeDocs.$inferSelect;
 export type InsertKnowledgeDoc = typeof knowledgeDocs.$inferInsert;
+export type PaymentSession = typeof paymentSessions.$inferSelect;
+export type InsertPaymentSession = typeof paymentSessions.$inferInsert;
+export type ModelAccess = typeof modelAccess.$inferSelect;
+export type InsertModelAccess = typeof modelAccess.$inferInsert;

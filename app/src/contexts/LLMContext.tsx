@@ -49,7 +49,7 @@ export function LLMProvider({ children }: { children: ReactNode }) {
 
       // Patch ALL model records to resolve context_window_size / sliding_window_size conflict.
       // Some models ship with both values positive which causes a TVM runtime crash.
-      // appConfig must be passed at engine construction time — reload() only takes 2 args.
+      // appConfig must be passed at engine construction time: reload() only takes 2 args.
       const appConfig = {
         ...prebuiltAppConfig,
         model_list: prebuiltAppConfig.model_list.map((m) => ({

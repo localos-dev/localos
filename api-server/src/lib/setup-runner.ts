@@ -128,7 +128,7 @@ export function startBackgroundSetup(): void {
   }
 
   isRunning = true;
-  logger.info("LLM runtime inference backend missing — starting background install");
+  logger.info("LLM runtime inference backend missing: starting background install");
 
   // Wrap in a self-contained async IIFE so errors never reach the process level
   (async () => {
@@ -154,7 +154,7 @@ export function startBackgroundSetup(): void {
       try { fs.unlinkSync(tmpTgz); } catch {}
       logger.info("Decompression complete. Extracting to ~/.local/...");
 
-      // Extract tar to ~/.local/ — preserves bin/ollama + lib/ollama/llama-server + all backends
+      // Extract tar to ~/.local/, preserves bin/ollama + lib/ollama/llama-server + all backends
       await new Promise<void>((resolve, reject) => {
         const proc = spawn("tar", ["-xf", tmpTar, "-C", localDir], {
           stdio: ["ignore", "ignore", "pipe"],
@@ -202,7 +202,7 @@ export function startBackgroundSetup(): void {
         },
       }).unref();
 
-      logger.info("LLM runtime fully installed — inference backend ready");
+      logger.info("LLM runtime fully installed: inference backend ready");
     } catch (err) {
       logger.error({ err }, "Background LLM runtime install failed");
       try { fs.unlinkSync(tmpTgz); } catch {}

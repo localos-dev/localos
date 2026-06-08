@@ -1,5 +1,5 @@
 // Pre-built HTML templates. Zero LLM involvement.
-// Templates are bundled in the app JS — no download needed, always offline.
+// Templates are bundled in the app JS, no download needed, always offline.
 
 export interface Template {
   type: string;
@@ -29,7 +29,7 @@ export function getTemplateForRequest(req: string): Template | null {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CALCULATOR — Google-style dark calculator
+// CALCULATOR: Google-style dark calculator
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CALCULATOR = `<!DOCTYPE html>
@@ -148,7 +148,7 @@ render();
 </html>`;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// WEBSITE — structure hardcoded, content filled by LLM via fillWebsite()
+// WEBSITE: structure hardcoded, content filled by LLM via fillWebsite()
 // ─────────────────────────────────────────────────────────────────────────────
 
 const WEBSITE_RAW = `<!DOCTYPE html>
@@ -1106,10 +1106,10 @@ canvas{width:100%;height:180px}
 <div class="panel">
   <h3>Recent Activity</h3>
   <div class="rows">
-    <div class="row"><div style="display:flex;align-items:center;gap:10px"><div class="status"></div><div><div class="row-n">New enterprise signup — Acme Corp</div><div class="row-s">2 minutes ago</div></div></div><div class="row-v">+$1,200/mo</div></div>
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><div class="status"></div><div><div class="row-n">New enterprise signup: Acme Corp</div><div class="row-s">2 minutes ago</div></div></div><div class="row-v">+$1,200/mo</div></div>
     <div class="row"><div style="display:flex;align-items:center;gap:10px"><div class="status"></div><div><div class="row-n">Stripe payment processed successfully</div><div class="row-s">14 minutes ago</div></div></div><div class="row-v">$349</div></div>
     <div class="row"><div style="display:flex;align-items:center;gap:10px"><div class="status" style="background:#f59e0b"></div><div><div class="row-n">Server response time spike detected</div><div class="row-s">1 hour ago</div></div></div><div class="row-v" style="color:#f59e0b">Warning</div></div>
-    <div class="row"><div style="display:flex;align-items:center;gap:10px"><div class="status"></div><div><div class="row-n">Deployment completed — v2.4.1</div><div class="row-s">3 hours ago</div></div></div><div class="row-v" style="color:#22c55e">Success</div></div>
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><div class="status"></div><div><div class="row-n">Deployment completed: v2.4.1</div><div class="row-s">3 hours ago</div></div></div><div class="row-v" style="color:#22c55e">Success</div></div>
   </div>
 </div>
 <script>

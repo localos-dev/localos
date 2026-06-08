@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import type { editor as MonacoEditor } from "monaco-editor";
 
-// Wire Monaco workers from the bundled files — works fully offline
+// Wire Monaco workers from the bundled files, works fully offline
 self.MonacoEnvironment = {
   getWorker(_: string, label: string): Worker {
     if (label === "json") return new jsonWorker();

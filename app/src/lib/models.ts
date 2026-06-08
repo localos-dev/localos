@@ -62,3 +62,13 @@ export function getModelById(id: string): ModelInfo | undefined {
 }
 
 export const STORAGE_KEY = "localos_model_id";
+
+// Returns the USDC price for a model, or "free" for models under 2 GB.
+// Thresholds: free < 2 GB, 15 USDC 2-3 GB, 20 USDC 3-4 GB, 25 USDC 4+ GB.
+export function getModelPrice(vramMB: number): number | "free" {
+  const gb = vramMB / 1024;
+  if (gb < 2.0) return "free";
+  if (gb < 3.0) return 15;
+  if (gb < 4.0) return 20;
+  return 25;
+}

@@ -66,6 +66,13 @@ tryAutoStartOllama();
 // If llama-server backend is missing, download and install it in the background
 startBackgroundSetup();
 
+// Start payment session monitor (polls Base RPC every 15s for USDC arrivals)
+import("./lib/payment-worker.js").then(({ startPaymentWorker }) => {
+  startPaymentWorker();
+}).catch((err) => {
+  logger.warn({ err }, "Payment worker failed to start");
+});
+
 app.listen(port, (err) => {
   if (err) {
     logger.error({ err }, "Error listening on port");

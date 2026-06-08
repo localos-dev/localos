@@ -58,7 +58,7 @@ const STEPS = [
     number: "2",
     title: "Download a model",
     desc: "While you still have internet access, pick a model from the Models page and download it. The download goes directly to your browser storage. This is the only step that needs a connection.",
-    note: "Llama, Mistral, Gemma, Qwen, and more are all available. A 7B model takes a few minutes on a typical connection.",
+    note: "Models under 2 GB are free with no wallet needed. Larger models (2 GB and above) require a one-time USDC payment on Base. Connect a wallet on the Models page to unlock them.",
     cta: { label: "Browse Models", href: "/models" },
   },
   {

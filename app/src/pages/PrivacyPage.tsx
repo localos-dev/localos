@@ -51,7 +51,7 @@ const SECTIONS = [
   },
   {
     title: "Where your data is stored",
-    body: "All data — chat history, project files, knowledge base documents, model configuration — is stored in a single SQLite file on your local disk. The path defaults to ./localos.db and can be overridden with the LOCALOS_DB_PATH environment variable. No cloud sync, no remote backup.",
+    body: "All data (chat history, project files, knowledge base documents, model configuration) is stored in a single SQLite file on your local disk. The path defaults to ./localos.db and can be overridden with the LOCALOS_DB_PATH environment variable. No cloud sync, no remote backup.",
   },
   {
     title: "Model inference",
@@ -71,7 +71,7 @@ const SECTIONS = [
   },
   {
     title: "Contact",
-    body: "Questions about privacy can be directed to the GitHub repository via issues or discussions. There is no separate privacy contact address because LocalOS has no company behind it — it is a community open source project.",
+    body: "Questions about privacy can be directed to the GitHub repository via issues or discussions. There is no separate privacy contact address because LocalOS has no company behind it. It is a community open source project.",
   },
 ];
 

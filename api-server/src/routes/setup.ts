@@ -187,7 +187,7 @@ router.post("/setup/install-llm", async (_req, res) => {
   send({ type: "log", message: "Preparing installation environment..." });
   cleanTempFiles(workDir);
 
-  // Check free disk space — need at least 3 GB for download + extract
+  // Check free disk space: need at least 3 GB for download + extract
   const requiredBytes = 3 * 1024 * 1024 * 1024;
   const freeHome = getFreeBytes(home);
   if (freeHome < requiredBytes) {
@@ -234,7 +234,7 @@ router.post("/setup/install-llm", async (_req, res) => {
       await decompressZstdToTar(tmpTgz, tmpTar);
       try { fs.unlinkSync(tmpTgz); } catch {}
 
-      // Extract .tar to ~/.local/ — preserves full directory structure:
+      // Extract .tar to ~/.local/, preserves full directory structure:
       // bin/ollama, lib/ollama/llama-server, lib/ollama/cuda/, etc.
       send({ type: "log", message: "Extracting LLM runtime..." });
       await new Promise<void>((resolve, reject) => {

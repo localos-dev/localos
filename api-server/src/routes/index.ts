@@ -10,6 +10,7 @@ import pullStreamRouter from "./pull-stream";
 import setupRouter from "./setup";
 import filesystemRouter from "./filesystem";
 import chatStreamRouter from "./chat-stream";
+import paymentRouter from "./payment";
 
 const router: IRouter = Router();
 
@@ -24,5 +25,6 @@ router.use(pullStreamRouter);
 router.use(setupRouter);
 router.use(filesystemRouter);
 router.use(chatStreamRouter);
+router.use(paymentRouter);
 
 export default router;

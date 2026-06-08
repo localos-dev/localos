@@ -1,4 +1,4 @@
-// Unified build engine — handles any "build X" request.
+// Unified build engine: handles any "build X" request.
 // Replaces the old template-fill approach with full AI code generation.
 
 import type { BuildStyle } from "./build-styles";
@@ -6,12 +6,12 @@ import type { BuildStyle } from "./build-styles";
 // ── Detection ─────────────────────────────────────────────────────────────
 
 const BUILD_KEYWORDS = [
-  // English — generic build intent
+  // English: generic build intent
   "build me a", "create me a", "make me a", "generate me a",
   "build me an", "create me an", "make me an",
   "build a ", "create a ", "make a ", "generate a ",
   "build an ", "create an ", "make an ",
-  // English — specific types
+  // English: specific types
   "build a website", "create a website", "make a website",
   "build a landing", "create a landing", "make a landing",
   "build a dashboard", "create a dashboard", "make a dashboard",

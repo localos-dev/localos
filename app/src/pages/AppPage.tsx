@@ -12,8 +12,12 @@ import {
   FAMILIES,
   STORAGE_KEY,
   formatSize,
+  getModelPrice,
   type ModelInfo,
 } from "@/lib/models";
+import { useAccount } from "wagmi";
+import WalletButton from "@/components/WalletButton";
+import PaymentModal from "@/components/PaymentModal";
 
 // ── Online status hook ─────────────────────────────────────────────────────
 
@@ -123,6 +127,8 @@ function ModelCard({
   selected: boolean;
   onSelect: () => void;
 }) {
+  const price = getModelPrice(model.vramMB);
+
   return (
     <button
       onClick={onSelect}
@@ -155,6 +161,21 @@ function ModelCard({
           <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.35)" }}>
             {formatSize(model.vramMB)}
           </span>
+          {price === "free" ? (
+            <span
+              className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              style={{ background: "rgba(0,200,100,0.15)", color: "#4cff9f", border: "1px solid rgba(0,200,100,0.3)" }}
+            >
+              Free
+            </span>
+          ) : (
+            <span
+              className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              style={{ background: "rgba(0,82,255,0.15)", color: "#6699ff", border: "1px solid rgba(0,82,255,0.3)" }}
+            >
+              {price} USDC
+            </span>
+          )}
           <div
             className="w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors"
             style={{
@@ -177,7 +198,98 @@ function ModelCard({
   );
 }
 
-// ── Family group ───────────────────────────────────────────────────────────
+// ── Sticky action bar ──────────────────────────────────────────────────────
+
+function StickyActionBar({
+  selectedModel,
+  paidSet,
+  address,
+  onDownload,
+  onUnlock,
+}: {
+  selectedModel: ModelInfo | null;
+  paidSet: Set<string>;
+  address: `0x${string}` | undefined;
+  onDownload: () => void;
+  onUnlock: (m: ModelInfo) => void;
+}) {
+  const price = selectedModel ? getModelPrice(selectedModel.vramMB) : "free";
+  const isFree = price === "free";
+  const isPaid = isFree || paidSet.has(selectedModel?.id ?? "");
+
+  const [remoteAccess, setRemoteAccess] = useState(false);
+  const shouldCheck = !isFree && !!address && !!selectedModel && !paidSet.has(selectedModel.id);
+
+  useEffect(() => {
+    if (!shouldCheck || !address || !selectedModel) return;
+    let cancelled = false;
+    const base = import.meta.env.BASE_URL?.replace(/\/$/, "") ?? "";
+    fetch(`${base}/api/payment/access?userWallet=${address}&modelId=${encodeURIComponent(selectedModel.id)}`)
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled && d.hasAccess) setRemoteAccess(true); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [shouldCheck, address, selectedModel?.id]);
+
+  const canDownload = isPaid || remoteAccess;
+
+  return (
+    <div
+      className="fixed bottom-0 left-0 right-0 z-20"
+      style={{
+        background: "rgba(0,5,30,0.92)",
+        backdropFilter: "blur(20px)",
+        borderTop: "1px solid rgba(255,255,255,0.07)",
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-5 md:px-10 py-4 flex items-center justify-between gap-6">
+        {selectedModel ? (
+          <>
+            <div>
+              <p className="text-sm font-semibold text-white">{selectedModel.name}</p>
+              <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+                {formatSize(selectedModel.vramMB)} download
+                {!isFree && (
+                  <span style={{ color: canDownload ? "#4cff9f" : "#6699ff" }}>
+                    {canDownload ? "  Unlocked" : `  ${price} USDC required`}
+                  </span>
+                )}
+              </p>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              {!canDownload && <WalletButton />}
+              {canDownload ? (
+                <button
+                  onClick={onDownload}
+                  className="px-7 py-3 rounded-xl font-semibold text-sm text-white transition-all"
+                  style={{ background: "#0052FF" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#0040CC")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#0052FF")}
+                >
+                  Download and Install
+                </button>
+              ) : (
+                <button
+                  onClick={() => onUnlock(selectedModel)}
+                  className="px-7 py-3 rounded-xl font-semibold text-sm text-white transition-all"
+                  style={{ background: "#0052FF" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#0040CC")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#0052FF")}
+                >
+                  Unlock for {price} USDC
+                </button>
+              )}
+            </div>
+          </>
+        ) : (
+          <p className="text-sm w-full text-center" style={{ color: "rgba(255,255,255,0.3)" }}>
+            Select a model above to continue
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // ── Setup wizard ───────────────────────────────────────────────────────────
 
@@ -191,8 +303,11 @@ function SetupWizard({ onDone }: { onDone: () => void }) {
   const [logs, setLogs] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [paidSet, setPaidSet] = useState<Set<string>>(new Set());
+  const [payingModel, setPayingModel] = useState<ModelInfo | null>(null);
   const { loadModel } = useLLM();
   const isOnline = useOnlineStatus();
+  const { address } = useAccount();
 
   const isSearching = search.trim().length > 0;
 
@@ -268,6 +383,7 @@ function SetupWizard({ onDone }: { onDone: () => void }) {
 
   if (phase === "pick") {
     return (
+      <>
       <div
         className="min-h-screen text-white flex flex-col"
         style={{ background: "linear-gradient(155deg, #000D2E 0%, #001A6E 50%, #0A1A4A 100%)" }}
@@ -305,7 +421,7 @@ function SetupWizard({ onDone }: { onDone: () => void }) {
               onBlur={(e) => (e.currentTarget.style.border = "1px solid rgba(255,255,255,0.12)")}
             />
 
-            {/* Family tabs — hidden while searching */}
+            {/* Family tabs: hidden while searching */}
             {!isSearching && (
               <div className="overflow-x-auto -mx-1 px-1">
                 <div className="flex gap-2 min-w-max">
@@ -380,41 +496,27 @@ function SetupWizard({ onDone }: { onDone: () => void }) {
         </div>
 
         {/* Sticky action bar */}
-        <div
-          className="fixed bottom-0 left-0 right-0 z-20"
-          style={{
-            background: "rgba(0,5,30,0.92)",
-            backdropFilter: "blur(20px)",
-            borderTop: "1px solid rgba(255,255,255,0.07)",
-          }}
-        >
-          <div className="max-w-7xl mx-auto px-5 md:px-10 py-4 flex items-center justify-between gap-6">
-            {selectedModel ? (
-              <>
-                <div>
-                  <p className="text-sm font-semibold text-white">{selectedModel.name}</p>
-                  <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
-                    {formatSize(selectedModel.vramMB)} download
-                  </p>
-                </div>
-                <button
-                  onClick={handleDownload}
-                  className="px-7 py-3 rounded-xl font-semibold text-sm text-white transition-all shrink-0"
-                  style={{ background: "#0052FF" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#0040CC")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "#0052FF")}
-                >
-                  Download and Install
-                </button>
-              </>
-            ) : (
-              <p className="text-sm w-full text-center" style={{ color: "rgba(255,255,255,0.3)" }}>
-                Select a model above to continue
-              </p>
-            )}
-          </div>
-        </div>
+        <StickyActionBar
+          selectedModel={selectedModel ?? null}
+          paidSet={paidSet}
+          address={address}
+          onDownload={handleDownload}
+          onUnlock={(m) => setPayingModel(m)}
+        />
       </div>
+
+      {payingModel && (
+        <PaymentModal
+          model={payingModel}
+          price={getModelPrice(payingModel.vramMB) as number}
+          onClose={() => setPayingModel(null)}
+          onPaid={() => {
+            setPaidSet((prev) => new Set([...prev, payingModel.id]));
+            setPayingModel(null);
+          }}
+        />
+      )}
+      </>
     );
   }
 
