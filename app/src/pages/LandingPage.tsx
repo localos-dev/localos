@@ -211,7 +211,7 @@ function ArchitectureSVG() {
       {/* Core border */}
       <circle cx={cx} cy={cy} r={coreR} fill="none" stroke="rgba(100,160,255,0.4)" strokeWidth={1.5} />
 
-      {/* LocalOS logo centered — fills most of the circle */}
+      {/* LocalOS logo centered: fills most of the circle */}
       <image
         href="/logo.png"
         x={cx - 48}
@@ -240,10 +240,10 @@ function HeroSection() {
         style={{ background: "radial-gradient(ellipse at 25% 45%, rgba(0,82,255,0.14) 0%, transparent 65%)" }}
       />
 
-      {/* Main content — fills available height */}
+      {/* Main content: fills available height */}
       <div className="relative z-10 flex-1 flex items-center">
         <div className="max-w-7xl mx-auto px-5 md:px-10 w-full grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center pt-20 pb-8">
-          {/* Left — copy */}
+          {/* Left: copy */}
           <div className="text-center md:text-left">
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
@@ -310,7 +310,7 @@ function HeroSection() {
             </motion.p>
           </div>
 
-          {/* Right — architecture diagram */}
+          {/* Right: architecture diagram */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -322,7 +322,7 @@ function HeroSection() {
         </div>
       </div>
 
-      {/* Bottom gradient — blends hero into the next section */}
+      {/* Bottom gradient: blends hero into the next section */}
       <div
         style={{
           position: "absolute",
@@ -336,7 +336,7 @@ function HeroSection() {
         }}
       />
 
-      {/* Stat strip — pinned to bottom of hero */}
+      {/* Stat strip: pinned to bottom of hero */}
       <div className="relative z-10 w-full" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
         <div className="max-w-7xl mx-auto px-5 md:px-10">
           <div className="grid grid-cols-3 divide-x" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
@@ -655,7 +655,7 @@ function HowItWorksSection() {
           </h2>
         </Reveal>
 
-        {/* Tree connector SVG — desktop only */}
+        {/* Tree connector SVG: desktop only */}
         <div ref={ref} className="relative">
           <svg
             viewBox="0 0 900 60"
@@ -1441,7 +1441,7 @@ function FinalCTASection() {
           </div>
         </Reveal>
       </div>
-      {/* Fade overlay — blends bottom of CTA into footer seamlessly */}
+      {/* Fade overlay: blends bottom of CTA into footer seamlessly */}
       <div
         className="absolute bottom-0 left-0 right-0 pointer-events-none"
         style={{

@@ -6,10 +6,14 @@
   "scripts": {
     "hello": "tsx ./src/hello.ts",
     "push-github": "tsx ./src/push-to-github.ts",
+    "test-payment": "tsx ./src/test-payment-e2e.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
     "@types/node": "catalog:",
     "tsx": "catalog:"
+  },
+  "dependencies": {
+    "ethers": "^6.16.0"
   }
 }

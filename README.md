@@ -272,6 +272,9 @@ Chat inference does not go through the API server. The browser talks directly to
 
 Contract: contracts/LocalOSTreasury.sol
 Network: Base mainnet
+Address: 0x9FFb768F76B657b94c0a4cC42dDAc51BB4cEfD02
+Basescan: https://basescan.org/address/0x9FFb768F76B657b94c0a4cC42dDAc51BB4cEfD02
+License: MIT
 Pattern: non-upgradable (no proxy)
 Payment token: USDC at 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 
@@ -377,7 +380,7 @@ Open the browser at the port shown in the terminal. No database setup needed. SQ
 LOCALOS_DB_PATH           Override the default SQLite file path (default: ./localos.db)
 LOCALOS_PROJECTS_ROOT     Override the default projects root directory
 SESSION_SECRET            Secret for session cookie signing
-CONTRACT_ADDRESS          Deployed LocalOSTreasury address on Base (used by the relay worker)
+TREASURY_ADDRESS          Deployed LocalOSTreasury address on Base (used by the relay worker)
 DEPLOYER_PRIVATE_KEY      Private key of the wallet that funds gas and relays USDC to the treasury
 BASE_RPC_URL              Base mainnet RPC endpoint (defaults to public endpoint if not set)
 VITE_REOWN_PROJECT_ID     Reown AppKit project ID for wallet identity (get one at cloud.reown.com)
@@ -429,7 +432,7 @@ Browser storage (OPFS): model weights are stored in the Origin Private File Syst
 
 localStorage over IndexedDB for app state: IndexedDB can hang indefinitely in PWA plus service worker context when offline. localStorage is synchronous, always available, and sufficient for app state.
 
-Non-upgradable treasury: LocalOSTreasury.sol is intentionally not upgradeable. If payment logic needs changing, a new contract is deployed and the relay worker's CONTRACT_ADDRESS is updated. This keeps the contract simple and auditable.
+Non-upgradable treasury: LocalOSTreasury.sol is intentionally not upgradeable. If payment logic needs changing, a new contract is deployed and the relay worker's TREASURY_ADDRESS is updated. This keeps the contract simple and auditable.
 
 Relay worker over on-chain access: access is tracked in the local SQLite database rather than read from the chain on every model load. This keeps the UI fast and avoids RPC calls during inference.
 

@@ -16,10 +16,10 @@ function getRpc(): string {
   return process.env.BASE_RPC_URL ?? "https://mainnet.base.org";
 }
 
-function getContractAddress(): string {
-  const addr = process.env.CONTRACT_ADDRESS ?? "";
+function getTreasuryAddress(): string {
+  const addr = process.env.TREASURY_ADDRESS ?? "";
   if (!addr) {
-    logger.warn("CONTRACT_ADDRESS not set: relay worker cannot forward USDC to treasury");
+    logger.warn("TREASURY_ADDRESS not set: relay worker cannot forward USDC to treasury");
   }
   return addr;
 }
@@ -56,7 +56,7 @@ async function checkAndRelay(): Promise<void> {
   const provider = new ethers.JsonRpcProvider(getRpc());
   const usdc = new ethers.Contract(USDC_BASE, ERC20_ABI, provider);
   const deployerWallet = getDeployerWallet();
-  const contractAddress = getContractAddress();
+  const contractAddress = getTreasuryAddress();
 
   for (const session of pending) {
     try {
@@ -72,7 +72,7 @@ async function checkAndRelay(): Promise<void> {
         .run();
 
       if (!deployerWallet || !contractAddress) {
-        logger.warn({ sessionId: session.id }, "Cannot relay: missing DEPLOYER_PRIVATE_KEY or CONTRACT_ADDRESS");
+        logger.warn({ sessionId: session.id }, "Cannot relay: missing DEPLOYER_PRIVATE_KEY or TREASURY_ADDRESS");
         continue;
       }
 
