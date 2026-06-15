@@ -17,7 +17,7 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 const FAMILIES = [
   {
     family: "Qwen 2.5",
-    org: "Alibaba",
+    org: "Alibaba Cloud",
     variants: ["0.5B", "1.5B", "3B", "7B", "14B", "32B"],
     strengths: "Instruction following, multilingual, strong math and coding",
     bestVariant: "Qwen 2.5 3B",

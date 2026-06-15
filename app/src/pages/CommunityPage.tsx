@@ -14,35 +14,6 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
   );
 }
 
-function ActivityChart() {
-  const ref = useRef<SVGSVGElement>(null);
-  const inView = useInView(ref as React.RefObject<Element>, { once: true, margin: "-60px" });
-  const W = 340; const H = 80; const cols = 24; const rows = 7;
-  const cellSize = 12; const gap = 3;
-  const totalW = cols * (cellSize + gap);
-  const offsetX = (W - totalW) / 2;
-  const cells: { x: number; y: number; intensity: number }[] = [];
-  for (let c = 0; c < cols; c++) {
-    for (let r = 0; r < rows; r++) {
-      const intensity = Math.random();
-      const recentBoost = c > 18 ? 1.5 : 1;
-      cells.push({ x: offsetX + c * (cellSize + gap), y: r * (cellSize + gap), intensity: Math.min(1, intensity * recentBoost) });
-    }
-  }
-  return (
-    <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: H }}>
-      {cells.map((cell, i) => (
-        <motion.rect key={i} x={cell.x} y={cell.y} width={cellSize} height={cellSize} rx={3}
-          fill={`rgba(0,82,255,${cell.intensity > 0.6 ? 0.8 : cell.intensity > 0.3 ? 0.4 : 0.1})`}
-          initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.05 + (i / cells.length) * 0.5 }} />
-      ))}
-      <text x={W / 2} y={H - 2} textAnchor="middle" fontSize="8" fill="rgba(255,255,255,0.25)">
-        24 weeks of community activity
-      </text>
-    </svg>
-  );
-}
 
 function GitHubIcon() {
   return (
@@ -143,16 +114,6 @@ export default function CommunityPage() {
         </div>
       </section>
 
-      <section style={{ background: "#070D1F", padding: "48px 0" }}>
-        <div className="max-w-4xl mx-auto px-5 md:px-10">
-          <Reveal>
-            <div className="rounded-2xl p-6" style={{ background: "rgba(0,82,255,0.04)", border: "1px solid rgba(0,82,255,0.12)" }}>
-              <div className="text-sm font-semibold mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>Community activity heatmap</div>
-              <ActivityChart />
-            </div>
-          </Reveal>
-        </div>
-      </section>
 
       <section style={{ background: "#060B18", padding: "72px 0" }}>
         <div className="max-w-5xl mx-auto px-5 md:px-10">

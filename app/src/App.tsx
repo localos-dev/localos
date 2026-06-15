@@ -34,6 +34,7 @@ import CodeEditorPage from "@/pages/CodeEditorPage";
 import LlamaModelsPage from "@/pages/LlamaModelsPage";
 import OtherModelsPage from "@/pages/OtherModelsPage";
 import ProjectsFeaturePage from "@/pages/ProjectsFeaturePage";
+import TokenPage from "@/pages/TokenPage";
 import { LLMProvider } from "@/contexts/LLMContext";
 import MobileGate from "@/components/MobileGate";
 
@@ -52,6 +53,7 @@ function Router() {
         <Route path="/about" component={AboutPage} />
         <Route path="/changelog" component={ChangelogPage} />
         <Route path="/docs" component={DocsPage} />
+        <Route path="/docs/:section">{(params) => <DocsPage initialSection={(params as { section: string }).section} />}</Route>
         <Route path="/knowledge-base" component={KnowledgeBasePage} />
         <Route path="/community" component={CommunityPage} />
         <Route path="/privacy" component={PrivacyPage} />
@@ -69,6 +71,7 @@ function Router() {
         <Route path="/models/llama" component={LlamaModelsPage} />
         <Route path="/models/other" component={OtherModelsPage} />
         <Route path="/projects-feature" component={ProjectsFeaturePage} />
+        <Route path="/tokenomics" component={TokenPage} />
         <Route component={NotFound} />
       </Switch>
     </AnimatePresence>

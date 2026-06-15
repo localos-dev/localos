@@ -321,8 +321,8 @@ const DOCS: DocSection[] = [
             ["Mistral AI", "Fast inference, strong multilingual", "8K to 32K tokens"],
             ["Gemma by Google", "Lightweight, efficient on low RAM", "8K tokens"],
             ["Phi by Microsoft", "Tiny but capable, great for low RAM", "4K to 128K tokens"],
-            ["Qwen by Alibaba", "Strong multilingual and code", "32K to 128K tokens"],
-            ["Hermes by NousResearch", "Agent and tool-use workflows", "8K to 128K tokens"],
+            ["Qwen by Alibaba Cloud", "Strong multilingual and code", "32K to 128K tokens"],
+            ["Hermes by Nous Research", "Agent and tool-use workflows", "8K to 128K tokens"],
           ]},
           { t: "visual", id: "model-grid" },
         ],
@@ -373,10 +373,10 @@ const DOCS: DocSection[] = [
       },
       {
         id: "qwen",
-        title: "Qwen",
-        subtitle: "Strong multilingual and code models from Alibaba.",
+        title: "Qwen by Alibaba Cloud",
+        subtitle: "Strong multilingual and code models from Alibaba Cloud.",
         blocks: [
-          { t: "p", v: "Qwen2 and Qwen2.5 are strong general-purpose models with excellent multilingual capabilities and very long context windows." },
+          { t: "p", v: "Qwen2 and Qwen2.5 are strong general-purpose models from Alibaba Cloud with excellent multilingual capabilities and very long context windows." },
           { t: "table", headers: ["Model ID", "Size", "RAM needed", "Notes"], rows: [
             ["qwen2.5:3b", "1.9 GB", "4 GB", "Fast and capable for everyday tasks"],
             ["qwen2.5:7b", "4.7 GB", "8 GB", "Strong code and reasoning"],
@@ -402,10 +402,10 @@ const DOCS: DocSection[] = [
       },
       {
         id: "hermes",
-        title: "Hermes Agent",
-        subtitle: "NousResearch models built for agent and tool-use workflows.",
+        title: "Hermes Agent by Nous Research",
+        subtitle: "Nous Research models built for agent and tool-use workflows.",
         blocks: [
-          { t: "p", v: "Hermes models from NousResearch are fine-tuned specifically for agentic tasks including structured output, tool calling, and multi-step reasoning. They follow instructions precisely and produce consistent JSON output." },
+          { t: "p", v: "Hermes models from Nous Research are fine-tuned specifically for agentic tasks including structured output, tool calling, and multi-step reasoning. They follow instructions precisely and produce consistent JSON output." },
           { t: "h2", v: "Recommended variants" },
           { t: "table", headers: ["Model ID", "Size", "RAM needed", "Best for"], rows: [
             ["hermes3:8b", "4.7 GB", "8 GB", "General agent tasks and structured output"],
@@ -737,10 +737,250 @@ const DOCS: DocSection[] = [
       },
     ],
   },
+  {
+    id: "payment",
+    label: "Payment",
+    pages: [
+      {
+        id: "paid-models",
+        title: "Paid models",
+        subtitle: "How model access works and what you pay for.",
+        blocks: [
+          { t: "p", v: "Most models under 2 GB are free with no payment required. Larger models require a one-time USDC payment on Base (Ethereum L2). Once paid, access is permanent for that wallet address. There is no subscription and no recurring charge." },
+          { t: "h2", v: "Model tiers" },
+          { t: "table", headers: ["Tier", "Price", "Models"], rows: [
+            ["Free", "0 USDC", "TinyLlama 1.1B, Llama 3.2 1B, SmolLM2 1.7B, Gemma 2 2B"],
+            ["Small", "15 USDC", "Llama 3.2 3B, Qwen 2.5 3B, Phi 3.5 Mini, Phi 4 Mini"],
+            ["Medium", "20 USDC", "Mistral 7B, Qwen 2.5 7B"],
+            ["Large", "25 USDC", "Llama 3.1 8B, Hermes 3 8B, DeepSeek R1 7B, DeepSeek R1 8B"],
+          ]},
+          { t: "note", kind: "info", v: "Payment is per wallet per model. If you pay once for Llama 3.1 8B, that model is permanently unlocked for the wallet address you used. Switching to a different wallet requires a new payment." },
+          { t: "h2", v: "USDC on Base" },
+          { t: "p", v: "LocalOS uses USDC on the Base network (Ethereum L2). Base has low transaction fees, typically under 1 cent. You do not need ETH to pay, only USDC on Base." },
+          { t: "table", headers: ["Detail", "Value"], rows: [
+            ["Network", "Base (Ethereum L2)"],
+            ["Token", "USDC"],
+            ["USDC contract", "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"],
+            ["Treasury contract", "0x9FFb768F76B657b94c0a4cC42dDAc51BB4cEfD02"],
+          ]},
+        ],
+      },
+      {
+        id: "how-to-pay",
+        title: "How to pay",
+        subtitle: "Step by step: connect a wallet and unlock a model.",
+        blocks: [
+          { t: "p", v: "Paying for a model is a plain USDC transfer. There is no contract interaction, no approval step, and no bridge required. You send USDC to a one-time address and the backend detects it automatically." },
+          { t: "h2", v: "Steps" },
+          { t: "list", items: [
+            "Open localos.xyz/app and go to the Models page",
+            "Find the model you want and click Unlock",
+            "Connect your wallet (MetaMask, Coinbase Wallet, or any browser wallet)",
+            "The app generates a fresh one-time deposit address for your session",
+            "Send the exact USDC amount to that address from your wallet or exchange",
+            "The backend monitors the address on Base and detects the payment within 15 to 30 seconds",
+            "Access is granted automatically. The model becomes available to download.",
+          ]},
+          { t: "note", kind: "tip", v: "You can send USDC directly from an exchange like Coinbase if you select Base as the withdrawal network. No separate wallet app is required." },
+          { t: "h2", v: "Payment detection" },
+          { t: "p", v: "The backend polls Base using the Etherscan API every few seconds. When the required USDC arrives at the deposit address, the payment worker records the transaction, grants model access, and sends a confirmation event to the frontend. The process takes 15 to 30 seconds after the on-chain confirmation." },
+          { t: "note", kind: "warn", v: "Send only USDC on Base. Do not send USDC on Ethereum mainnet, Polygon, or any other network. Payments on the wrong network cannot be recovered." },
+        ],
+      },
+      {
+        id: "refunds",
+        title: "Refunds and support",
+        subtitle: "What happens if something goes wrong.",
+        blocks: [
+          { t: "p", v: "Because payments are on-chain and irreversible, LocalOS cannot issue automatic refunds. If a payment was sent but access was not granted, contact the team with your transaction hash and wallet address." },
+          { t: "h2", v: "Common issues" },
+          { t: "table", headers: ["Issue", "Solution"], rows: [
+            ["Sent USDC on wrong network", "Contact support with the transaction hash. On-chain transfers cannot be reversed by LocalOS."],
+            ["Payment detected but no access", "Refresh the Models page. If still not granted after 2 minutes, contact support."],
+            ["Deposit address expired", "Each session generates a new address. Start a fresh Unlock flow to get a new address."],
+            ["Sent wrong amount", "The exact amount is required. If you sent less, contact support with your transaction hash."],
+          ]},
+          { t: "p", v: "Contact support at localos.xyz/contact with your wallet address and the Base transaction hash." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "roadmap",
+    label: "Roadmap",
+    pages: [
+      {
+        id: "phase-1",
+        title: "Phase 1: Foundation",
+        subtitle: "Current state of the LocalOS platform.",
+        blocks: [
+          { t: "p", v: "Phase 1 establishes the core LocalOS platform. Everything in this phase is live or in progress." },
+          { t: "table", headers: ["Feature", "Status"], rows: [
+            ["Browser-based local AI OS at localos.xyz/app", "Live"],
+            ["WebLLM inference via WebGPU, full offline after download", "Live"],
+            ["Free models under 2 GB with no payment required", "Live"],
+            ["Paid model access via one-time USDC payment on Base", "Live"],
+            ["Chat, Code Editor, Web Builder, Projects, Knowledge Base", "Live"],
+            ["USDC payment system on Base with verified treasury contract", "Live"],
+            ["LocalOS Token fair launch via Clanker, 100 percent community", "Coming soon"],
+          ]},
+        ],
+      },
+      {
+        id: "phase-2",
+        title: "Phase 2: Mobile and Expand",
+        subtitle: "Native mobile apps and expanded capabilities.",
+        blocks: [
+          { t: "p", v: "Phase 2 brings LocalOS to mobile devices and expands what the platform can do." },
+          { t: "table", headers: ["Feature", "Status"], rows: [
+            ["Android native app", "Planned"],
+            ["iOS native app", "Planned"],
+            ["PWA support for all mobile browsers", "Planned"],
+            ["Voice input: speak to the AI, response read aloud", "Planned"],
+            ["Image generation models running locally via WebGPU", "Planned"],
+            ["Multi-model chat: switch models mid-conversation", "Planned"],
+            ["Shareable projects: export and import project bundles", "Planned"],
+          ]},
+        ],
+      },
+      {
+        id: "phase-3",
+        title: "Phase 3: Ecosystem",
+        subtitle: "Plugins, marketplace, token utility, and offline transactions.",
+        blocks: [
+          { t: "p", v: "Phase 3 builds out the LocalOS ecosystem with a plugin system, marketplace, and token-powered features." },
+          { t: "table", headers: ["Feature", "Status"], rows: [
+            ["Plugin system: install tools and agents into LocalOS", "Planned"],
+            ["Marketplace: buy and sell plugins, templates, agents with LocalOS Token", "Planned"],
+            ["Token utility: pay for premium features and receive service discounts", "Planned"],
+            ["Governance: token holders vote on ecosystem proposals", "Planned"],
+            ["Local API: expose LocalOS AI as a REST API for other local apps", "Planned"],
+            ["Offline blockchain transactions: sign and queue transactions offline, auto-broadcast when connected", "Planned"],
+          ]},
+          { t: "note", kind: "info", v: "Offline blockchain transactions will allow users to sign and prepare on-chain actions while fully air-gapped. Transactions are queued locally and broadcast automatically the next time an internet connection is available." },
+        ],
+      },
+      {
+        id: "phase-4",
+        title: "Phase 4: Sovereign Intelligence",
+        subtitle: "Persistent memory, local knowledge search, and fully autonomous agents.",
+        blocks: [
+          { t: "p", v: "Phase 4 is the core intelligence layer for LocalOS: a system that knows you, remembers everything, reasons over your full knowledge base, and executes multi-step tasks without leaving your device." },
+          { t: "h2", v: "Core capabilities" },
+          { t: "table", headers: ["Feature", "Status"], rows: [
+            ["Local embeddings: convert documents and chats into vector representations on device", "Planned"],
+            ["Vector search: find semantically similar content across all projects and knowledge base", "Planned"],
+            ["Knowledge RAG: inject relevant context from your files into every chat automatically", "Planned"],
+            ["Persistent memory: remember facts, preferences, and project state across sessions", "Planned"],
+            ["Autonomous agents: plan and execute multi-step tasks with tools, file access, and web fetch", "Planned"],
+            ["Agent pipelines: chain multiple agents to complete complex workflows fully offline", "Planned"],
+            ["Offline sync: replicate your LocalOS state to a second device with no cloud relay", "Planned"],
+          ]},
+          { t: "h2", v: "What this means in practice" },
+          { t: "list", items: [
+            "You open a project and the model already has context from your past notes, files, and previous chats",
+            "You ask a question and LocalOS searches your entire knowledge base before answering",
+            "You give an agent a task and it reads files, writes code, runs tests, and reports back",
+            "You take your laptop offline and all of this continues to work without interruption",
+          ]},
+        ],
+      },
+      {
+        id: "phase-5",
+        title: "Phase 5: Scale",
+        subtitle: "Enterprise, agents, and full decentralization.",
+        blocks: [
+          { t: "p", v: "Phase 5 takes LocalOS to enterprise and fully decentralized operation." },
+          { t: "table", headers: ["Feature", "Status"], rows: [
+            ["Enterprise workspace: team mode over local network", "Planned"],
+            ["Custom model fine-tuning on device", "Planned"],
+            ["Decentralized model registry", "Planned"],
+            ["Agent framework: multi-agent pipelines running fully offline", "Planned"],
+            ["Full on-chain governance system", "Planned"],
+          ]},
+          { t: "note", kind: "tip", v: "Follow updates at x.com/localos_xyz and github.com/localos-dev for the latest progress on each phase." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "tokenomics",
+    label: "Tokenomics",
+    pages: [
+      {
+        id: "token-overview",
+        title: "LocalOS Token",
+        subtitle: "Community owned utility token for the LocalOS ecosystem.",
+        blocks: [
+          { t: "p", v: "LocalOS Token is a community-owned utility token designed to power the LocalOS ecosystem. It was launched fairly through Clanker with no private rounds, no seed investors, no venture capital, no team allocation, and no treasury allocation at launch." },
+          { t: "p", v: "The entire token supply entered circulation through the community." },
+          { t: "h2", v: "Distribution" },
+          { t: "table", headers: ["Category", "Allocation"], rows: [
+            ["Community", "100%"],
+            ["Team", "0%"],
+            ["Investors", "0%"],
+            ["Advisors", "0%"],
+            ["Foundation", "0%"],
+            ["Treasury", "0%"],
+          ]},
+          { t: "note", kind: "info", v: "100 percent of the token supply was launched into the open market. Every token in circulation was acquired by community participants. There are no vesting schedules, no lockups, and no insider allocations." },
+          { t: "h2", v: "Core philosophy" },
+          { t: "list", items: [
+            "Community first: 100 percent of supply launched to the open market",
+            "Revenue driven: the team earns through platform activity, not token sales",
+            "Long term alignment: success depends on building useful products, not selling reserved tokens",
+          ]},
+        ],
+      },
+      {
+        id: "token-utility",
+        title: "Token utility",
+        subtitle: "What the LocalOS Token is used for.",
+        blocks: [
+          { t: "p", v: "The LocalOS Token is designed to power activity across the ecosystem. Utility expands as the platform grows." },
+          { t: "h2", v: "Current and planned utilities" },
+          { t: "table", headers: ["Utility", "Description"], rows: [
+            ["Premium Features", "Unlock advanced LocalOS functionality beyond the free tier"],
+            ["AI Credits", "Access enhanced compute and agent capabilities"],
+            ["Marketplace Payments", "Purchase plugins, templates, agents, and tools"],
+            ["Governance", "Participate in ecosystem proposals and voting"],
+            ["Service Discounts", "Receive discounts when paying for services with the token"],
+          ]},
+          { t: "h2", v: "Revenue model" },
+          { t: "p", v: "The team earns through platform activity, not through selling reserved tokens. Revenue sources include:" },
+          { t: "list", items: [
+            "AI services and premium features",
+            "Enterprise deployments and private infrastructure licensing",
+            "Hosted solutions for organizations",
+            "Professional services and custom integrations",
+            "Marketplace ecosystem activity",
+            "A 2 percent platform trading fee",
+          ]},
+          { t: "p", v: "Service payments are accepted in USDC and LocalOS Token. This creates sustainable operating revenue while keeping token ownership in community hands." },
+        ],
+      },
+      {
+        id: "token-links",
+        title: "Links and resources",
+        subtitle: "Where to find the token and follow updates.",
+        blocks: [
+          { t: "h2", v: "Official resources" },
+          { t: "table", headers: ["Resource", "URL"], rows: [
+            ["Token page", "localos.xyz/tokenomics"],
+            ["Website", "localos.xyz"],
+            ["GitHub", "github.com/localos-dev"],
+            ["X", "x.com/localos_xyz"],
+            ["Contracts repo", "github.com/localos-dev/localos-contracts"],
+          ]},
+          { t: "note", kind: "warn", v: "LocalOS does not have an official Telegram, Discord, or any other community channel beyond the links listed above. Be cautious of impersonators." },
+        ],
+      },
+    ],
+  },
 ];
 
 // User-facing vs developer sections
-const USER_SECTION_IDS = new Set(["get-started", "models"]);
+const USER_SECTION_IDS = new Set(["get-started", "models", "payment", "roadmap", "tokenomics"]);
 const USER_DOCS = DOCS.filter((s) => USER_SECTION_IDS.has(s.id));
 const DEV_DOCS  = DOCS.filter((s) => !USER_SECTION_IDS.has(s.id));
 const ALL_DOCS  = DOCS; // used for search across both modes
@@ -1011,9 +1251,9 @@ function ModelGridVisual() {
     { name: "Llama",   maker: "Meta",          sizes: "1B to 70B",   strength: "General purpose, code, reasoning",  color: "#0052FF" },
     { name: "Mistral", maker: "Mistral AI",     sizes: "7B to 8x7B",  strength: "Fast inference, strong multilingual", color: "#7C3AED" },
     { name: "Gemma",   maker: "Google",         sizes: "2B to 27B",   strength: "Efficient on low RAM hardware",      color: "#0891B2" },
-    { name: "Qwen",    maker: "Alibaba",        sizes: "3B to 72B",   strength: "Strong code and multilingual",       color: "#D97706" },
+    { name: "Qwen",    maker: "Alibaba Cloud",   sizes: "3B to 72B",   strength: "Strong code and multilingual",       color: "#D97706" },
     { name: "Phi",     maker: "Microsoft",      sizes: "3.8B to 14B", strength: "Tiny but capable, minimal RAM",      color: "#059669" },
-    { name: "Hermes",  maker: "NousResearch",   sizes: "8B to 70B",   strength: "Agent workflows and tool use",       color: "#DC2626" },
+    { name: "Hermes",  maker: "Nous Research",  sizes: "8B to 70B",   strength: "Agent workflows and tool use",       color: "#DC2626" },
   ];
   return (
     <div className="my-8 grid grid-cols-3 gap-3">
@@ -1208,12 +1448,26 @@ function BlockRenderer({ block }: { block: Block }) {
 
 // ── Main layout ────────────────────────────────────────────────────────────
 
-export default function DocsPage() {
+export default function DocsPage({ initialSection }: { initialSection?: string } = {}) {
   const { dark, toggle } = useDarkMode();
-  const [mode, setMode]                       = useState<"user" | "dev">("user");
-  const [activeSectionId, setActiveSectionId] = useState(USER_DOCS[0].id);
-  const [activePageId, setActivePageId]       = useState(USER_DOCS[0].pages[0].id);
+
+  const resolveInitial = () => {
+    if (initialSection) {
+      const found = ALL_DOCS.find((s) => s.id === initialSection);
+      if (found) {
+        const inUser = USER_SECTION_IDS.has(found.id);
+        return { mode: inUser ? "user" as const : "dev" as const, sectionId: found.id, pageId: found.pages[0].id };
+      }
+    }
+    return { mode: "user" as const, sectionId: USER_DOCS[0].id, pageId: USER_DOCS[0].pages[0].id };
+  };
+
+  const initial = resolveInitial();
+  const [mode, setMode]                       = useState<"user" | "dev">(initial.mode);
+  const [activeSectionId, setActiveSectionId] = useState(initial.sectionId);
+  const [activePageId, setActivePageId]       = useState(initial.pageId);
   const [searchOpen, setSearchOpen]           = useState(false);
+  const [sidebarOpen, setSidebarOpen]         = useState(false);
   const contentRef                            = useRef<HTMLDivElement>(null);
 
   const currentDocs   = mode === "user" ? USER_DOCS : DEV_DOCS;
@@ -1303,27 +1557,39 @@ export default function DocsPage() {
     <div className="flex flex-col" style={{ height: "100dvh", ...cssVars, background: "var(--docs-bg)", color: "var(--docs-text)", fontFamily: "'Inter', system-ui, sans-serif" }}>
 
       {/* ── Top bar ───────────────────────────────────────────────────────── */}
-      <header className="flex items-center gap-4 px-4 h-14 flex-shrink-0" style={{ borderBottom: "1px solid var(--docs-border)", background: "var(--docs-bg)" }}>
+      <header className="flex items-center gap-3 px-4 h-14 flex-shrink-0" style={{ borderBottom: "1px solid var(--docs-border)", background: "var(--docs-bg)" }}>
+        {/* Hamburger — mobile only */}
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg flex-shrink-0 transition-colors"
+          style={{ color: "var(--docs-muted)", border: "1px solid var(--docs-border)" }}
+          aria-label="Open navigation"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path d="M3 12h18M3 6h18M3 18h18" />
+          </svg>
+        </button>
+
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2 mr-4 flex-shrink-0" style={{ textDecoration: "none" }}>
+        <a href="/" className="flex items-center gap-2 flex-shrink-0 mr-2" style={{ textDecoration: "none" }}>
           <img src="/logo.png" alt="LocalOS" className="w-7 h-7 object-contain flex-shrink-0" />
-          <span className="text-sm font-bold" style={{ color: "var(--docs-heading)" }}>LocalOS docs</span>
+          <span className="hidden sm:block text-sm font-bold" style={{ color: "var(--docs-heading)" }}>LocalOS docs</span>
         </a>
 
         {/* Search */}
         <button
           onClick={() => setSearchOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm flex-1 max-w-sm transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm flex-1 md:max-w-sm transition-colors"
           style={{ background: "var(--docs-subtle)", border: "1px solid var(--docs-border)", color: "var(--docs-muted)" }}
         >
           <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <circle cx={11} cy={11} r={8} /><path d="M21 21l-4.35-4.35" />
           </svg>
           <span className="flex-1 text-left text-[13px]">Search docs...</span>
-          <kbd className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: "var(--docs-subtle)", border: "1px solid var(--docs-border)", fontFamily: "monospace" }}>Ctrl K</kbd>
+          <kbd className="hidden sm:block text-[11px] px-1.5 py-0.5 rounded" style={{ background: "var(--docs-subtle)", border: "1px solid var(--docs-border)", fontFamily: "monospace" }}>Ctrl K</kbd>
         </button>
 
-        <div className="flex-1" />
+        <div className="hidden md:block flex-1" />
 
         {/* GitHub */}
         <a
@@ -1334,11 +1600,12 @@ export default function DocsPage() {
           style={{ color: "var(--docs-muted)", textDecoration: "none" }}
           onMouseEnter={(e) => (e.currentTarget.style.color = "var(--docs-heading)")}
           onMouseLeave={(e) => (e.currentTarget.style.color = "var(--docs-muted)")}
+          aria-label="GitHub"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
           </svg>
-          GitHub
+          <span className="hidden md:block">GitHub</span>
         </a>
 
         {/* Theme toggle */}
@@ -1388,26 +1655,56 @@ export default function DocsPage() {
       {/* ── Body: sidebar + content ───────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
 
-        {/* Sidebar */}
-        <aside className="hidden md:block w-60 flex-shrink-0 overflow-y-auto py-6 px-3" style={{ borderRight: "1px solid var(--docs-border)", background: "var(--docs-bg)" }}>
+        {/* Mobile sidebar backdrop */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 md:hidden"
+            style={{ background: "rgba(0,0,0,0.45)" }}
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* Sidebar — desktop: static; mobile: fixed drawer */}
+        <aside
+          className={`
+            fixed md:static inset-y-0 left-0 z-50
+            w-72 md:w-60 flex-shrink-0 overflow-y-auto py-6 px-3
+            transition-transform duration-200 md:transition-none
+            ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+          `}
+          style={{ borderRight: "1px solid var(--docs-border)", background: "var(--docs-bg)" }}
+        >
+          {/* Mobile close row */}
+          <div className="flex items-center justify-between mb-4 md:hidden px-3">
+            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--docs-muted)", letterSpacing: "0.1em" }}>Navigation</span>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="w-8 h-8 flex items-center justify-center rounded-lg"
+              style={{ color: "var(--docs-muted)", border: "1px solid var(--docs-border)" }}
+              aria-label="Close navigation"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
           {currentDocs.map((section) => (
             <div key={section.id} className="mb-5">
-              {/* Section group label */}
               <div
                 className="px-3 mb-1 text-xs font-semibold uppercase tracking-wider cursor-pointer transition-colors"
                 style={{ color: section.id === activeSectionId ? "var(--docs-tab-active)" : "var(--docs-muted)", letterSpacing: "0.08em", paddingTop: "2px", paddingBottom: "6px" }}
-                onClick={() => goToSection(section.id)}
+                onClick={() => { goToSection(section.id); setSidebarOpen(false); }}
               >
                 {section.label}
               </div>
-              {/* Pages */}
               {section.pages.map((page) => {
                 const isActive = page.id === activePageId && section.id === activeSectionId;
                 return (
                   <button
                     key={page.id}
-                    onClick={() => goTo(section.id, page.id)}
-                    className="w-full text-left px-3 py-1.5 rounded-md text-[13.5px] transition-colors block"
+                    onClick={() => { goTo(section.id, page.id); setSidebarOpen(false); }}
+                    className="w-full text-left px-3 py-2 md:py-1.5 rounded-md text-[13.5px] transition-colors block"
                     style={{
                       background: isActive ? "var(--docs-active-bg)" : "transparent",
                       color:      isActive ? "var(--docs-active-fg)" : "var(--docs-body)",
